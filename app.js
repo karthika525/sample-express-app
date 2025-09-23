@@ -1,40 +1,24 @@
+
 const express = require('express');
-const path = require('path');
-const session = require('express-session');
-const expressLayouts = require('express-ejs-layouts');
-const authRoutes = require('./routes/authRoutes');
+const morgan = require('morgan');
+const cors = require('cors');
+
 require('./database/db'); 
 
+const apiRouter = require('./routes/api');
+
 const app = express();
-
-
-app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
+app.use(cors());
 app.use(express.json());
-
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-
-app.use(expressLayouts);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.set('layout', 'layouts/main-layout');
-
-
-app.use(session({
-  secret: 'secret123', 
-  resave: false,
-  saveUninitialized: false
-}));
-
-
-app.use((req, res, next) => {
-  res.locals.userEmail = req.session.userEmail;
-  next();
+app.use('/api', apiRouter);
+app.get('/', (req, res) => {
+  res.json({ message: 'Tech Store API is running. Use /api/devices' });
 });
 
-
-app.use('/', authRoutes);
-
+app.use((req, res) => {
+  res.status(404).json({ message: 'Not Found' });
+});
 
 module.exports = app;
+

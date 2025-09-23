@@ -1,0 +1,23 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #85b683;
+}
+
+nav a {
+  margin-right: 10px;
+  text-decoration: none;
+  color: #7a0505;
+}
+
+form input, form button {
+  margin-bottom: 10px;
+  padding: 6px;
+  width: 250px;
+  color: lavender;
+}
+
+button {
+  cursor: pointer;
+}
+

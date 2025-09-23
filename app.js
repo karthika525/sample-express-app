@@ -1,24 +1,23 @@
-
 const express = require('express');
-const morgan = require('morgan');
 const cors = require('cors');
+const morgan = require('morgan');
 
-require('./database/db'); 
-
-const apiRouter = require('./routes/api');
+require('./database/db');
+const bookRoutes = require('./routes/bookRoutes');
 
 const app = express();
-app.use(morgan('dev'));
-app.use(cors());
-app.use(express.json());
-app.use('/api', apiRouter);
-app.get('/', (req, res) => {
-  res.json({ message: 'Tech Store API is running. Use /api/devices' });
-});
 
-app.use((req, res) => {
-  res.status(404).json({ message: 'Not Found' });
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.use('/api', bookRoutes);
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to Online Bookstore API' });
 });
 
 module.exports = app;
+
 

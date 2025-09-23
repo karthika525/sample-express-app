@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/my_db');
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-  console.log('Connected to MongoDB');
-});
 
-module.exports = db;
+mongoose.connect('mongodb://127.0.0.1:27017/bookstore')
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error(' MongoDB error:', err));
 
+module.exports = mongoose;

@@ -6,6 +6,7 @@ router.post('/books', async (req, res) => {
   try {
     let { title, author, price, inStock } = req.body;
 
+   
     if (typeof inStock === 'string') {
       inStock = inStock.toLowerCase() === 'yes';
     }
@@ -21,19 +22,16 @@ router.post('/books', async (req, res) => {
 
 router.get('/books', async (req, res) => {
   try {
-    const books = await Book.find().sort({ createdAt: -1 });
+    const books = await Book.find();
     res.json({ data: books });
   } catch (err) {
     res.status(500).json({ message: 'Server Error' });
   }
 });
 
-
 router.put('/books/:id', async (req, res) => {
   try {
     let { title, author, price, inStock } = req.body;
-
-   
     if (typeof inStock === 'string') {
       inStock = inStock.toLowerCase() === 'yes';
     }

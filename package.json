@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Simple API for devices (phones & laptops)",
   "main": "app.js",
-
   "scripts": {
-  "start": "node ./bin/www"
-}
-,
+    "start": "node ./bin/www"
+  },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.0.0",
     "morgan": "^1.10.1",
     "path": "^0.12.7"

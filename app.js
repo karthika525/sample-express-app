@@ -1,23 +1,16 @@
 const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-
-require('./database/db');
-const bookRoutes = require('./routes/bookRoutes');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/api');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use('/api', authRoutes);
 
-app.use('/api', bookRoutes);
+mongoose.connect('mongodb://127.0.0.1:27017/my_db', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.log(err));
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Online Bookstore API' });
-});
-
-module.exports = app;
-
+module.exports=app;
 

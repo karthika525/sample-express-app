@@ -1,69 +1,67 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
+
 const router = express.Router();
-const Book = require('../models/bookModel');
+const JWT_SECRET = "mysecretkey";
 
-router.post('/books', async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
-    let { title, author, price, inStock } = req.body;
-
-    if (typeof inStock === 'string') {
-      inStock = inStock.toLowerCase() === 'yes';
+    const { email, password, confirmPassword } = req.body;
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const book = new Book({ title, author, price, inStock });
-    await book.save();
-
-    res.status(201).json({ message: 'Book added successfully', data: book });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ email, password: hashedPassword });
+    await newUser.save();
+    res.status(201).json({ message: "Signup successful" });
   } catch (err) {
-    res.status(500).json({ message: 'Server Error', error: err.message });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-router.get('/books', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
-    const books = await Book.find().sort({ createdAt: -1 });
-    res.json({ data: books });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    res.json({ message: "Login successful", token });
   } catch (err) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-
-router.put('/books/:id', async (req, res) => {
-  try {
-    let { title, author, price, inStock } = req.body;
-
-   
-    if (typeof inStock === 'string') {
-      inStock = inStock.toLowerCase() === 'yes';
-    }
-
-    const updatedBook = await Book.findByIdAndUpdate(
-      req.params.id,
-      { title, author, price, inStock },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedBook) {
-      return res.status(404).json({ message: 'Book not found' });
-    }
-
-    res.json({ message: 'Book updated successfully', data: updatedBook });
-  } catch (err) {
-    res.status(500).json({ message: 'Server Error', error: err.message });
+const verifyToken = (req, res, next) => {
+  const header = req.headers['authorization'];
+  if (!header) {
+    return res.status(401).json({ message: "Missing token" });
   }
-});
-
-router.delete('/books/:id', async (req, res) => {
-  try {
-    const deleted = await Book.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: 'Book not found' });
+  const token = header.split(" ")[1];
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Invalid token" });
     }
-    res.json({ message: 'Book deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: 'Server Error', error: err.message });
-  }
+    req.userId = decoded.userId;
+    next();
+  });
+};
+
+router.get('/dashboard', verifyToken, (req, res) => {
+  res.json({ message: "Welcome to your dashboard!" });
 });
 
 module.exports = router;

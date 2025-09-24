@@ -8,19 +8,18 @@ const JWT_SECRET = "mysecretkey";
 
 router.post('/signup', async (req, res) => {
   try {
-    const { email, password, confirmPassword } = req.body;
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
+    const { username, email, password } = req.body;
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ message: "Username already exists" });
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already exists" });
-    }
-    
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, password: hashedPassword });
+
+    const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
+
     res.status(201).json({ message: "Signup successful" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -29,39 +28,30 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
+
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
-    res.json({ message: "Login successful", token });
+
+    res.json({
+      message: "Login successful",
+      username: user.username,
+      email: user.email,
+      token
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-const verifyToken = (req, res, next) => {
-  const header = req.headers['authorization'];
-  if (!header) {
-    return res.status(401).json({ message: "Missing token" });
-  }
-  const token = header.split(" ")[1];
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-    req.userId = decoded.userId;
-    next();
-  });
-};
-
-router.get('/dashboard', verifyToken, (req, res) => {
-  res.json({ message: "Welcome to your dashboard!" });
-});
-
 module.exports = router;
+

@@ -1,7 +1,7 @@
 {
-  "name": "tech-store-api",
+  "name": "user-login-api",
   "version": "1.0.0",
-  "description": "Simple API for devices (phones & laptops)",
+  "description": "Simple API for user signup/login ",
   "main": "app.js",
   "scripts": {
     "start": "node ./bin/www"

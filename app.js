@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
-const productRoutes = require('./routes/products'); 
+
+const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -18,9 +19,9 @@ app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', (req, res) => {
-  res.send('<a href="/products//">Click here for Product List</a>');
+  res.send('<a href="/users/create_profile">Click here for Profile creation</a>');
 });
-app.use('/products', productRoutes);
+app.use('/users', usersRouter);
 
 mongoose.connect('mongodb://127.0.0.1:27017/prodctDB')
   .then(() => console.log("MongoDB connected"))

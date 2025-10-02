@@ -18,7 +18,7 @@ app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', (req, res) => {
-  res.send('<h1 style="color:red">Welcome to Product Management App</h1><a href="/products/create_product">Add Product</a>');
+  res.send('<a href="/products//">Click here for Product List</a>');
 });
 app.use('/products', productRoutes);
 

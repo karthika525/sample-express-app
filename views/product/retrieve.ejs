@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+</head>
+<body>
+  <h1>Product List</h1>
+
+  <% if (data.length > 0) { %>
+    <table border="1" cellpadding="10">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th colspan="3">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(product => { %>
+          <tr>
+            <td><%= product.name %></td>
+            <td><%= product.description %></td>
+            <td><%= product.price %></td>
+            <td><a href="/products/generate-pdf/<%= product._id %>">Download PDF</a></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No Products found.</p>
+  <% } %>
+
+  <br>
+  <a href="/products/create_product">Add New Product</a>
+</body>
+</html>

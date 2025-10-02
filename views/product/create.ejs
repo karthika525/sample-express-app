@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+</head>
+<body>
+  <h1>Add Product</h1>
+
+  <% if (error) { %>
+    <p style="color:red"><%= error %></p>
+  <% } %>
+
+  <form action="/products/create_product" method="POST">
+  <input type="text" name="name" placeholder="Product Name" required><br><br>
+  <input type="number" name="price" placeholder="Price" required><br><br>
+  <textarea name="description" placeholder="Description" required></textarea><br><br>
+  <button type="submit">Add Product</button>
+  <br><br>
+  <a href="/products">View Products</a>
+</form>
+</body>
+</html>

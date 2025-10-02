@@ -1,0 +1,86 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-image:linear-gradient(to bottom,#110c4e,#651008);
+  color: #051a4f;
+  height:100vh;
+}
+h1 {
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form {
+  max-width: 400px;
+  margin: 0 auto 30px auto;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+form input,
+form textarea,
+form button {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+table {
+  width: 80%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+table th,
+table td {
+  border: 1px solid #22209e;
+  padding: 12px;
+  text-align: center;
+}
+
+table th {
+  background-color: #007bff;
+  color: white;
+}
+
+table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+a {
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  color: white;
+  background-color: #28a745;
+}
+
+a:hover {
+  background-color: #218838;
+}
+
+
+a[value="pdf"] {
+  background-color: #6c757d;
+}
+
+a[value="pdf"]:hover {
+  background-color: #5a6268;
+}

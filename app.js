@@ -1,31 +1,30 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const api= require('./routes/api');
-const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const app = express();
 const cors = require('cors');
+const productRoutes = require('./routes/product'); 
 
-app.use(bodyParser.json());
-app.use('/api', api);
+const app = express();
+
+
 app.use(morgan('dev'));
 app.use(cors());
+app.use(express.urlencoded({ extended: true })); 
 app.use(express.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/my_db', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => console.log(err));
-
-
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', (req, res) => {
-  res.json({ message: "Simple Login API running" });
+  res.send('<h1 style="color:red">Welcome to Product Management App</h1><a href="/products/create_product">Add Product</a>');
 });
+app.use('/products', productRoutes);
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Not Found" });
-});
+mongoose.connect('mongodb://127.0.0.1:27017/prodctDB')
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log(err));
 
 module.exports=app;
 

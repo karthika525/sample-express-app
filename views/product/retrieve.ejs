@@ -23,7 +23,7 @@
             <td><%= product.name %></td>
             <td><%= product.description %></td>
             <td><%= product.price %></td>
-            <td><a href="/products/generate-pdf/<%= product._id %>">Download PDF</a></td>
+            <td><a href="/products/send_product_email/<%= product._id %>" value="mail" type="submit">Email</a></td>
           </tr>
         <% }); %>
       </tbody>
